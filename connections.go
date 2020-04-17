@@ -35,7 +35,7 @@ const (
 // InitMessagePayload defines the parameters of a connection
 // init message.
 type InitMessagePayload struct {
-	AuthToken string `json:"authToken"`
+	AuthToken string `json:"Authorization"`
 }
 
 // StartMessagePayload defines the parameters of an operation that
@@ -297,6 +297,7 @@ func (conn *connection) readLoop() {
 						msg := operationMessageForType(gqlConnectionError)
 						msg.Payload = fmt.Sprintf("Failed to authenticate user: %v", err)
 						conn.outgoing <- msg
+						conn.close()
 					} else {
 						conn.user = user
 						conn.outgoing <- operationMessageForType(gqlConnectionAck)
